@@ -6,6 +6,9 @@ package vista;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.Color;
+import java.util.function.Function;
 import javax.swing.UIManager;
 
 /**
@@ -19,6 +22,13 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        FlatSVGIcon icon = new FlatSVGIcon("icons/add.svg");
+        icon.setColorFilter(new FlatSVGIcon.ColorFilter(new Function<Color, Color>() {
+            @Override
+            public Color apply(Color t) {
+                return Color.red;
+            }}));
+        lbl.setIcon(icon);
     }
 
     /**
@@ -44,6 +54,8 @@ public class Principal extends javax.swing.JFrame {
         btnRehacer = new javax.swing.JButton();
         jToolBar3 = new javax.swing.JToolBar();
         btnCompilar = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        lbl = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -59,7 +71,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar2.add(jMenu5);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(51, 255, 51));
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -114,6 +126,23 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel1.add(jToolBar3);
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(24, Short.MAX_VALUE)
+                .addComponent(lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+
         jMenu1.setText("Archivo");
         jMenuBar1.add(jMenu1);
 
@@ -133,12 +162,18 @@ public class Principal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(188, 188, 188)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 253, Short.MAX_VALUE))
+                .addGap(76, 76, 76)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 93, Short.MAX_VALUE))
         );
 
         pack();
@@ -182,8 +217,10 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
+    private javax.swing.JLabel lbl;
     // End of variables declaration//GEN-END:variables
 }
