@@ -5,6 +5,8 @@
 package icons;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.Color;
+import java.util.function.Function;
 
 /**
  *
@@ -95,5 +97,22 @@ public class SVGIcons {
 
     public static FlatSVGIcon UndoIcon() {
         return new FlatSVGIcon(ICONS_PATH + "undo.svg");
+    }
+    
+    public static void changeColor(Color color){
+        FlatSVGIcon.ColorFilter c = new FlatSVGIcon.ColorFilter(new Function<Color, Color>(){
+            @Override
+            public Color apply(Color t){
+                return color;
+            }
+        });
+        
+        SVGIcons.NoteAddIcon().setColorFilter(c);
+        SVGIcons.SaveAsIcon().setColorFilter(c);
+        SVGIcons.FolderIcon().setColorFilter(c);
+        SVGIcons.UndoIcon().setColorFilter(c);
+        SVGIcons.RedoIcon().setColorFilter(c);
+        SVGIcons.PlayIcon().setColorFilter(c);
+        
     }
 }
