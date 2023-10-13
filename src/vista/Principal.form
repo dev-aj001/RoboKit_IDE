@@ -85,22 +85,22 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanel1" pref="1173" max="32767" attributes="0"/>
-          <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
+          <Component id="pnlToolMenu" max="32767" attributes="0"/>
+          <Component id="pnlMain" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <Component id="pnlToolMenu" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jPanel2" max="32767" attributes="0"/>
+              <Component id="pnlMain" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="pnlToolMenu">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="UIManager.getColor( &quot;RoboKit.toolBar&quot; )" type="code"/>
@@ -192,14 +192,14 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel2">
+    <Container class="javax.swing.JPanel" name="pnlMain">
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="mainSplit" pref="0" max="32767" attributes="0"/>
+                  <Component id="mainSplit" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -366,9 +366,9 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="jPanel8" pref="68" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -384,20 +384,23 @@
                             <TitledBorder title="Fases de compilaci&#xf3;n"/>
                           </Border>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[32767, 250]"/>
+                        </Property>
                       </Properties>
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
+                              <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jToggleButton1" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jToggleButton2" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jToggleButton3" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jToggleButton4" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jToggleButton5" alignment="0" pref="220" max="32767" attributes="0"/>
-                                      <Component id="jToggleButton6" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jButton3" alignment="1" pref="220" max="32767" attributes="0"/>
+                                      <Component id="jButton8" alignment="1" max="32767" attributes="0"/>
+                                      <Component id="jButton9" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jButton10" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jButton11" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jButton12" alignment="1" pref="220" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -407,51 +410,54 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton12" min="-2" pref="27" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jToggleButton2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jToggleButton3" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jToggleButton4" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jToggleButton5" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jToggleButton6" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton3" min="-2" pref="27" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton8" min="-2" pref="27" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton9" min="-2" pref="27" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton10" min="-2" pref="27" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton11" min="-2" pref="27" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JToggleButton" name="jToggleButton1">
+                        <Component class="javax.swing.JButton" name="jButton3">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Analizador Lexico"/>
+                            <Property name="text" type="java.lang.String" value="Analizador sint&#xe1;ctico"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JToggleButton" name="jToggleButton2">
+                        <Component class="javax.swing.JButton" name="jButton8">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Analizador Sintactico"/>
+                            <Property name="text" type="java.lang.String" value="Analizador sint&#xe1;ctico"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JToggleButton" name="jToggleButton3">
+                        <Component class="javax.swing.JButton" name="jButton9">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Analizador Semantico"/>
+                            <Property name="text" type="java.lang.String" value="C&#xf3;digo intermedio"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JToggleButton" name="jToggleButton4">
+                        <Component class="javax.swing.JButton" name="jButton10">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Codigo Intermedio"/>
+                            <Property name="text" type="java.lang.String" value="Optimizaci&#xf3;n&#xa0;de c&#xf3;digo"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JToggleButton" name="jToggleButton5">
+                        <Component class="javax.swing.JButton" name="jButton11">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Opimizacion de Codigo"/>
+                            <Property name="text" type="java.lang.String" value="C&#xf3;digo objeto"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JToggleButton" name="jToggleButton6">
+                        <Component class="javax.swing.JButton" name="jButton12">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Codigo Objeto"/>
+                            <Property name="text" type="java.lang.String" value="Analizador l&#xe9;xico"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -494,6 +500,12 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
               <SubComponents>
                 <Container class="javax.swing.JTabbedPane" name="tabbedCode">
+                  <Properties>
+                    <Property name="tabLayoutPolicy" type="int" value="1"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="tabChanged"/>
+                  </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
                       <JSplitPaneConstraints position="top"/>
@@ -502,7 +514,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
                   <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel4">
+                    <Container class="javax.swing.JPanel" name="pnlStartPage">
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                           <JTabbedPaneConstraints tabName="Start Page">
@@ -511,11 +523,28 @@
                         </Constraint>
                       </Constraints>
 
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+                        <Property name="useNullLayout" type="boolean" value="false"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jLabel1">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Pesta&#xf1;a de inicio de RoboKit"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                              <AbsoluteConstraints x="10" y="10" width="270" height="40"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                      </SubComponents>
                     </Container>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JTabbedPane" name="tabbedCompile">
+                  <Properties>
+                    <Property name="tabLayoutPolicy" type="int" value="1"/>
+                  </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
                       <JSplitPaneConstraints position="bottom"/>
@@ -646,7 +675,7 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="javax.swing.JTextArea" name="jTextArea1">
+                            <Component class="javax.swing.JTextArea" name="txtOutput">
                               <Properties>
                                 <Property name="columns" type="int" value="20"/>
                                 <Property name="rows" type="int" value="5"/>

@@ -8,11 +8,15 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import custom.botones.ButtonTabComponent;
 import icons.SVGIcons;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.function.Function;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
@@ -28,17 +33,16 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  */
 public class Principal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Principal
-     */
+    private RSyntaxTextArea actualCode = null;
+    private ArrayList<RSyntaxTextArea> lista;
+    
     public Principal() {
         initComponents();
         // Agregar un ComponentListener para ajustar automáticamente la ubicación del divisor al cambiar el tamaño de la ventana
         //leftSplit.setDividerLocation(0.55);
+        inittabbedCode();
         
-        RSyntaxTextArea txt = new RSyntaxTextArea();
-        RTextScrollPane scrll = new RTextScrollPane(txt);
-        jPanel4.add(scrll);
+        txtOutput.setText("Tab seleccionada "+tabbedCode.getSelectedIndex());
         
         rightSplit.setDividerLocation(0.6);
         //changeIconColor(Color.yellow);
@@ -69,6 +73,70 @@ public class Principal extends javax.swing.JFrame {
         btnRehacer.repaint();
         btnCompilar.repaint();
     }
+    
+    
+    private void inittabbedCode(){
+        /*
+            Metodo utilizado para inicializar inittabbedCode el tabbed pane principal,
+            -Genera el leadingComponent
+            -Controla la creacion y eliminacion de pestañas
+            -Muestra la pestaña de inicio
+            -Maneja la asociacion de cada RSyntax
+        */
+        
+        
+        /*-------------------------------------------------------*/
+        /*  Creacion del leadingComponent (boton + al inicio)   */
+        
+        
+        // Crear boton "+" y boton "-" 
+        JButton addButton = new JButton("+");
+        JButton removeButton = new JButton("-");
+        
+        // Agrega botones como componentes líderes y de seguimiento
+        tabbedCode.putClientProperty("JTabbedPane.leadingComponent", addButton);
+        //tabbedCode.putClientProperty("JTabbedPane.trailingComponent", removeButton);
+    
+        // Agrega ActionListener para los botones
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lógica para añadir una nueva pestaña
+                addCodeTab("Nuevo*");
+                tabbedCode.setSelectedIndex(tabbedCode.getTabCount()-1);
+            }
+        });
+
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lógica para eliminar la última pestaña
+                int lastIndex = tabbedCode.getTabCount() - 1;
+                if (lastIndex >= 0) {
+                    tabbedCode.removeTabAt(lastIndex);
+                }
+            }
+        });
+        
+        /*-------------------------------------------------------*/
+        /*  Boton de cierre de pestaña  */     
+        
+        tabbedCode.setTabComponentAt(0, new ButtonTabComponent(tabbedCode));
+        
+    }
+    
+    private void addCodeTab(String title) {
+        JPanel panel = new JPanel(new BorderLayout());
+        RSyntaxTextArea txt = new RSyntaxTextArea();
+        RTextScrollPane scrll = new RTextScrollPane(txt);
+        txt.setCodeFoldingEnabled(true);
+        txt.setWhitespaceVisible(true);
+        txt.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C);
+        txt.setBackground(UIManager.getColor("RoboKit.panel"));
+        panel.add(scrll);
+        tabbedCode.addTab(title, panel);
+        tabbedCode.setTabComponentAt(tabbedCode.indexOfComponent(panel), new ButtonTabComponent(tabbedCode));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -83,7 +151,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
-        jPanel1 = new javax.swing.JPanel();
+        pnlToolMenu = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnNuevo = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
@@ -93,7 +161,7 @@ public class Principal extends javax.swing.JFrame {
         btnRehacer = new javax.swing.JButton();
         jToolBar3 = new javax.swing.JToolBar();
         btnCompilar = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        pnlMain = new javax.swing.JPanel();
         mainSplit = new javax.swing.JSplitPane();
         leftSplit = new javax.swing.JSplitPane();
         jPanel9 = new javax.swing.JPanel();
@@ -103,16 +171,17 @@ public class Principal extends javax.swing.JFrame {
         jTree1 = new javax.swing.JTree();
         jPanel3 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
-        jToggleButton4 = new javax.swing.JToggleButton();
-        jToggleButton5 = new javax.swing.JToggleButton();
-        jToggleButton6 = new javax.swing.JToggleButton();
+        jButton3 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         rightSplit = new javax.swing.JSplitPane();
         tabbedCode = new javax.swing.JTabbedPane();
-        jPanel4 = new javax.swing.JPanel();
+        pnlStartPage = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         tabbedCompile = new javax.swing.JTabbedPane();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -122,7 +191,7 @@ public class Principal extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtOutput = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -140,8 +209,8 @@ public class Principal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel1.setBackground(UIManager.getColor( "RoboKit.toolBar" ));
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
+        pnlToolMenu.setBackground(UIManager.getColor( "RoboKit.toolBar" ));
+        pnlToolMenu.setLayout(new javax.swing.BoxLayout(pnlToolMenu, javax.swing.BoxLayout.LINE_AXIS));
 
         jToolBar1.setFloatable(true);
         jToolBar1.setRollover(true);
@@ -164,7 +233,7 @@ public class Principal extends javax.swing.JFrame {
         btnAbrir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(btnAbrir);
 
-        jPanel1.add(jToolBar1);
+        pnlToolMenu.add(jToolBar1);
 
         jToolBar2.setFloatable(true);
         jToolBar2.setRollover(true);
@@ -186,7 +255,7 @@ public class Principal extends javax.swing.JFrame {
         btnRehacer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar2.add(btnRehacer);
 
-        jPanel1.add(jToolBar2);
+        pnlToolMenu.add(jToolBar2);
 
         jToolBar3.setFloatable(true);
         jToolBar3.setRollover(true);
@@ -197,7 +266,7 @@ public class Principal extends javax.swing.JFrame {
         btnCompilar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar3.add(btnCompilar);
 
-        jPanel1.add(jToolBar3);
+        pnlToolMenu.add(jToolBar3);
 
         mainSplit.setOneTouchExpandable(true);
 
@@ -256,18 +325,22 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel7.setBackground(UIManager.getColor( "@background" ));
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Fases de compilación"));
+        jPanel7.setMaximumSize(new java.awt.Dimension(32767, 250));
 
-        jToggleButton1.setText("Analizador Lexico");
+        jButton3.setText("Analizador sintáctico");
 
-        jToggleButton2.setText("Analizador Sintactico");
+        jButton8.setText("Analizador sintáctico");
 
-        jToggleButton3.setText("Analizador Semantico");
+        jButton9.setText("Código intermedio");
+        jButton9.setEnabled(false);
 
-        jToggleButton4.setText("Codigo Intermedio");
+        jButton10.setText("Optimización de código");
+        jButton10.setEnabled(false);
 
-        jToggleButton5.setText("Opimizacion de Codigo");
+        jButton11.setText("Código objeto");
+        jButton11.setEnabled(false);
 
-        jToggleButton6.setText("Codigo Objeto");
+        jButton12.setText("Analizador léxico");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -276,29 +349,29 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                    .addComponent(jToggleButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToggleButton1)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton2)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton3)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton4)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton5)
+                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton6)
+                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -343,10 +416,23 @@ public class Principal extends javax.swing.JFrame {
         rightSplit.setDividerLocation(200);
         rightSplit.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        jPanel4.setLayout(new java.awt.BorderLayout());
-        tabbedCode.addTab("Start Page", jPanel4);
+        tabbedCode.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabbedCode.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabChanged(evt);
+            }
+        });
+
+        pnlStartPage.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setText("Pestaña de inicio de RoboKit");
+        pnlStartPage.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 270, 40));
+
+        tabbedCode.addTab("Start Page", pnlStartPage);
 
         rightSplit.setTopComponent(tabbedCode);
+
+        tabbedCompile.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.Y_AXIS));
 
@@ -400,9 +486,9 @@ public class Principal extends javax.swing.JFrame {
         });
         jPanel6.add(jButton7);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        txtOutput.setColumns(20);
+        txtOutput.setRows(5);
+        jScrollPane2.setViewportView(txtOutput);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -425,18 +511,18 @@ public class Principal extends javax.swing.JFrame {
 
         mainSplit.setRightComponent(rightSplit);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
+        pnlMain.setLayout(pnlMainLayout);
+        pnlMainLayout.setHorizontalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainSplit, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(mainSplit)
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        pnlMainLayout.setVerticalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addComponent(mainSplit)
                 .addContainerGap())
         );
@@ -461,15 +547,15 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1173, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlToolMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlToolMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -498,6 +584,10 @@ public class Principal extends javax.swing.JFrame {
     private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDeshacerActionPerformed
+
+    private void tabChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabChanged
+        txtOutput.setText("La tab seleccionada es: " + tabbedCode.getSelectedIndex());
+    }//GEN-LAST:event_tabChanged
 
     /**
      * @param args the command line arguments
@@ -528,10 +618,17 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnRehacer;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -541,12 +638,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -554,21 +648,22 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
-    private javax.swing.JToggleButton jToggleButton4;
-    private javax.swing.JToggleButton jToggleButton5;
-    private javax.swing.JToggleButton jToggleButton6;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
     private javax.swing.JTree jTree1;
     private javax.swing.JSplitPane leftSplit;
     private javax.swing.JSplitPane mainSplit;
+    private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel pnlStartPage;
+    private javax.swing.JPanel pnlToolMenu;
     private javax.swing.JSplitPane rightSplit;
     private javax.swing.JTabbedPane tabbedCode;
     private javax.swing.JTabbedPane tabbedCompile;
+    private javax.swing.JTextArea txtOutput;
     // End of variables declaration//GEN-END:variables
+
+    private void botonMas() {
+        
+    }
 }
