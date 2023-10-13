@@ -15,10 +15,14 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Function;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -38,6 +42,7 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal() {
         initComponents();
+        this.lista = new ArrayList<>();
         // Agregar un ComponentListener para ajustar automáticamente la ubicación del divisor al cambiar el tamaño de la ventana
         //leftSplit.setDividerLocation(0.55);
         inittabbedCode();
@@ -61,7 +66,7 @@ public class Principal extends javax.swing.JFrame {
         btnDeshacer.setIcon(SVGIcons.UndoIcon());
         btnRehacer.setIcon(SVGIcons.RedoIcon());
         btnCompilar.setIcon(SVGIcons.PlayIcon());
-        jButton1.setIcon(SVGIcons.ArrowLeftIcon());
+        btnReRun.setIcon(SVGIcons.ArrowLeftIcon());
         
     }
     
@@ -133,7 +138,27 @@ public class Principal extends javax.swing.JFrame {
         txt.setWhitespaceVisible(true);
         txt.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C);
         txt.setBackground(UIManager.getColor("RoboKit.panel"));
+        
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(selectedFile));
+                txt.read(br, null);
+                br.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+        
+        
+        
         panel.add(scrll);
+        lista.add(txt);
         tabbedCode.addTab(title, panel);
         tabbedCode.setTabComponentAt(tabbedCode.indexOfComponent(panel), new ButtonTabComponent(tabbedCode));
     }
@@ -147,10 +172,6 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu3 = new javax.swing.JMenu();
-        jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
         pnlToolMenu = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnNuevo = new javax.swing.JButton();
@@ -161,6 +182,7 @@ public class Principal extends javax.swing.JFrame {
         btnRehacer = new javax.swing.JButton();
         jToolBar3 = new javax.swing.JToolBar();
         btnCompilar = new javax.swing.JButton();
+        jToolBar4 = new javax.swing.JToolBar();
         pnlMain = new javax.swing.JPanel();
         mainSplit = new javax.swing.JSplitPane();
         leftSplit = new javax.swing.JSplitPane();
@@ -185,26 +207,63 @@ public class Principal extends javax.swing.JFrame {
         tabbedCompile = new javax.swing.JTabbedPane();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnReRun = new javax.swing.JButton();
+        btnPause = new javax.swing.JButton();
+        btnStop = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtOutput = new javax.swing.JTextArea();
+        scrLexico = new javax.swing.JScrollPane();
+        pnlLexico = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        pnlSintactico = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        pnlSemantico = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem19 = new javax.swing.JMenuItem();
+        jMenuItem20 = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem17 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
-
-        jMenu3.setText("jMenu3");
-
-        jMenu4.setText("File");
-        jMenuBar2.add(jMenu4);
-
-        jMenu5.setText("Edit");
-        jMenuBar2.add(jMenu5);
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -264,9 +323,18 @@ public class Principal extends javax.swing.JFrame {
         btnCompilar.setFocusable(false);
         btnCompilar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnCompilar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompilarActionPerformed(evt);
+            }
+        });
         jToolBar3.add(btnCompilar);
 
         pnlToolMenu.add(jToolBar3);
+
+        jToolBar4.setFloatable(true);
+        jToolBar4.setRollover(true);
+        pnlToolMenu.add(jToolBar4);
 
         mainSplit.setOneTouchExpandable(true);
 
@@ -329,7 +397,7 @@ public class Principal extends javax.swing.JFrame {
 
         jButton3.setText("Analizador sintáctico");
 
-        jButton8.setText("Analizador sintáctico");
+        jButton8.setText("Analizador semántico");
 
         jButton9.setText("Código intermedio");
         jButton9.setEnabled(false);
@@ -385,7 +453,7 @@ public class Principal extends javax.swing.JFrame {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 68, Short.MAX_VALUE)
+            .addGap(0, 219, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -403,7 +471,7 @@ public class Principal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -436,55 +504,35 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.Y_AXIS));
 
-        jButton1.setMargin(new java.awt.Insets(2, 2, 5, 2));
-        jButton1.setMaximumSize(new java.awt.Dimension(31, 31));
-        jButton1.setMinimumSize(new java.awt.Dimension(30, 30));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnReRun.setMargin(new java.awt.Insets(2, 2, 5, 2));
+        btnReRun.setMaximumSize(new java.awt.Dimension(31, 31));
+        btnReRun.setMinimumSize(new java.awt.Dimension(30, 30));
+        btnReRun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnReRunActionPerformed(evt);
             }
         });
-        jPanel6.add(jButton1);
+        jPanel6.add(btnReRun);
 
-        jButton4.setMargin(new java.awt.Insets(2, 2, 5, 2));
-        jButton4.setMaximumSize(new java.awt.Dimension(31, 31));
-        jButton4.setMinimumSize(new java.awt.Dimension(30, 30));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnPause.setMargin(new java.awt.Insets(2, 2, 5, 2));
+        btnPause.setMaximumSize(new java.awt.Dimension(31, 31));
+        btnPause.setMinimumSize(new java.awt.Dimension(30, 30));
+        btnPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnPauseActionPerformed(evt);
             }
         });
-        jPanel6.add(jButton4);
+        jPanel6.add(btnPause);
 
-        jButton5.setMargin(new java.awt.Insets(2, 2, 5, 2));
-        jButton5.setMaximumSize(new java.awt.Dimension(31, 31));
-        jButton5.setMinimumSize(new java.awt.Dimension(30, 30));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnStop.setMargin(new java.awt.Insets(2, 2, 5, 2));
+        btnStop.setMaximumSize(new java.awt.Dimension(31, 31));
+        btnStop.setMinimumSize(new java.awt.Dimension(30, 30));
+        btnStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnStopActionPerformed(evt);
             }
         });
-        jPanel6.add(jButton5);
-
-        jButton6.setMargin(new java.awt.Insets(2, 2, 5, 2));
-        jButton6.setMaximumSize(new java.awt.Dimension(31, 31));
-        jButton6.setMinimumSize(new java.awt.Dimension(30, 30));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton6);
-
-        jButton7.setMargin(new java.awt.Insets(2, 2, 5, 2));
-        jButton7.setMaximumSize(new java.awt.Dimension(31, 31));
-        jButton7.setMinimumSize(new java.awt.Dimension(30, 30));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton7);
+        jPanel6.add(btnStop);
 
         txtOutput.setColumns(20);
         txtOutput.setRows(5);
@@ -506,6 +554,90 @@ public class Principal extends javax.swing.JFrame {
         );
 
         tabbedCompile.addTab("Output", jPanel5);
+
+        pnlLexico.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"", null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Lexema", "Grupo"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
+
+        pnlLexico.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 240, 430));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        jLabel3.setText("Analizador Léxico");
+        pnlLexico.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 190, 20));
+
+        jLabel4.setText("Componentes léxicos");
+        pnlLexico.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
+
+        scrLexico.setViewportView(pnlLexico);
+
+        tabbedCompile.addTab("Léxico", scrLexico);
+
+        pnlSintactico.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"", null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Lexema", "Grupo"
+            }
+        ));
+        jScrollPane6.setViewportView(jTable2);
+
+        pnlSintactico.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 240, 430));
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        jLabel5.setText("Analizador Sintactico");
+        pnlSintactico.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 250, 20));
+
+        jLabel6.setText("Gramaticas");
+        pnlSintactico.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 90, -1));
+
+        jScrollPane4.setViewportView(pnlSintactico);
+
+        tabbedCompile.addTab("Sintáctico", jScrollPane4);
+
+        pnlSemantico.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"", null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Lexema", "Grupo"
+            }
+        ));
+        jScrollPane7.setViewportView(jTable3);
+
+        pnlSemantico.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 240, 430));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        jLabel7.setText("Analizador Semántico");
+        pnlSemantico.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 230, 20));
+
+        jLabel8.setText("Gramaticas y atributos");
+        pnlSemantico.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
+
+        jScrollPane5.setViewportView(pnlSemantico);
+
+        tabbedCompile.addTab("Semántico", jScrollPane5);
 
         rightSplit.setBottomComponent(tabbedCompile);
 
@@ -530,15 +662,109 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1.setBackground(UIManager.getColor( "MyApp.topColor" ));
 
         jMenu1.setText("Archivo");
+
+        jMenuItem13.setText("Nuevo archivo");
+        jMenu1.add(jMenuItem13);
+
+        jMenuItem16.setText("Nueva carpeta");
+        jMenu1.add(jMenuItem16);
+        jMenu1.add(jSeparator5);
+
+        jMenuItem14.setText("Abrir archivo");
+        jMenu1.add(jMenuItem14);
+
+        jMenuItem15.setText("Abrir carpeta");
+        jMenu1.add(jMenuItem15);
+        jMenu1.add(jSeparator6);
+
+        jMenuItem18.setText("Guardar");
+        jMenu1.add(jMenuItem18);
+
+        jMenuItem19.setText("Guardar como...");
+        jMenu1.add(jMenuItem19);
+
+        jMenuItem20.setText("Guardar todo");
+        jMenu1.add(jMenuItem20);
+        jMenu1.add(jSeparator7);
+
+        jMenuItem17.setText("Salir");
+        jMenu1.add(jMenuItem17);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Editar");
+
+        jMenuItem7.setText("Deshacer");
+        jMenu2.add(jMenuItem7);
+
+        jMenuItem6.setText("Rehacer");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem6);
+        jMenu2.add(jSeparator3);
+
+        jMenuItem8.setText("Copiar");
+        jMenu2.add(jMenuItem8);
+
+        jMenuItem9.setText("Cortar");
+        jMenu2.add(jMenuItem9);
+
+        jMenuItem10.setText("Pegar");
+        jMenu2.add(jMenuItem10);
+        jMenu2.add(jSeparator4);
+
+        jMenuItem11.setText("Seleccionar todo");
+        jMenu2.add(jMenuItem11);
+
+        jMenuItem12.setText("Eliminar selección");
+        jMenu2.add(jMenuItem12);
+
         jMenuBar1.add(jMenu2);
 
         jMenu6.setText("Vista");
+
+        jMenuItem1.setText("Fuente");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem1);
+
+        jMenuItem2.setText("Tema");
+        jMenu6.add(jMenuItem2);
+        jMenu6.add(jSeparator1);
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Mostrar numero de linea");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jCheckBoxMenuItem1);
+
+        jCheckBoxMenuItem2.setSelected(true);
+        jCheckBoxMenuItem2.setText("Mostrar code folding");
+        jMenu6.add(jCheckBoxMenuItem2);
+        jMenu6.add(jSeparator2);
+
+        jMenuItem3.setText("Propiedades");
+        jMenu6.add(jMenuItem3);
+
         jMenuBar1.add(jMenu6);
 
         jMenu7.setText("Ayuda");
+
+        jMenuItem4.setText("Acerca de");
+        jMenu7.add(jMenuItem4);
+
+        jMenuItem5.setText("Documentación");
+        jMenu7.add(jMenuItem5);
+
         jMenuBar1.add(jMenu7);
 
         setJMenuBar(jMenuBar1);
@@ -561,25 +787,17 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnReRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReRunActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnReRunActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnPauseActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
         // TODO add your handling code here:
@@ -588,6 +806,24 @@ public class Principal extends javax.swing.JFrame {
     private void tabChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabChanged
         txtOutput.setText("La tab seleccionada es: " + tabbedCode.getSelectedIndex());
     }//GEN-LAST:event_tabChanged
+
+    private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
+        // Boton compilar
+        actualCode = lista.get(tabbedCode.getSelectedIndex()-1);
+        txtOutput.setText(actualCode.getText());
+    }//GEN-LAST:event_btnCompilarActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -616,28 +852,50 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnDeshacer;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
+    private javax.swing.JButton btnPause;
+    private javax.swing.JButton btnReRun;
     private javax.swing.JButton btnRehacer;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnStop;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem20;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel3;
@@ -648,16 +906,36 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
+    private javax.swing.JToolBar jToolBar4;
     private javax.swing.JTree jTree1;
     private javax.swing.JSplitPane leftSplit;
     private javax.swing.JSplitPane mainSplit;
+    private javax.swing.JPanel pnlLexico;
     private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel pnlSemantico;
+    private javax.swing.JPanel pnlSintactico;
     private javax.swing.JPanel pnlStartPage;
     private javax.swing.JPanel pnlToolMenu;
     private javax.swing.JSplitPane rightSplit;
+    private javax.swing.JScrollPane scrLexico;
     private javax.swing.JTabbedPane tabbedCode;
     private javax.swing.JTabbedPane tabbedCompile;
     private javax.swing.JTextArea txtOutput;
