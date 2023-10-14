@@ -12,6 +12,7 @@ import custom.botones.ButtonTabComponent;
 import icons.SVGIcons;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,11 +20,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.function.Function;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -37,91 +40,76 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  */
 public class Principal extends javax.swing.JFrame {
 
-    private RSyntaxTextArea actualCode = null;
-    private ArrayList<RSyntaxTextArea> lista;
+    private RSyntaxTextArea currentCode;
+    private ArrayList<RSyntaxTextArea> list_rsyntax;
+    private int tabCount;
+    private int tabSelected;
     
     public Principal() {
         initComponents();
-        this.lista = new ArrayList<>();
-        // Agregar un ComponentListener para ajustar automáticamente la ubicación del divisor al cambiar el tamaño de la ventana
-        //leftSplit.setDividerLocation(0.55);
+        this.list_rsyntax = new ArrayList<>();
         inittabbedCode();
-        
-        txtOutput.setText("Tab seleccionada "+tabbedCode.getSelectedIndex());
-        
+        clientProp();
         rightSplit.setDividerLocation(0.6);
         //changeIconColor(Color.yellow);
         setIcons();        
         SVGIcons.NoteAddIcon().setColorFilter( new FlatSVGIcon.ColorFilter( color -> Color.RED ) );
     }
     
-    /** Metodos creados **/
-    
-    //Iconos
-    private void setIcons(){
-               
-        btnNuevo.setIcon(SVGIcons.NoteAddIcon());
-        btnGuardar.setIcon(SVGIcons.SaveIcon());
-        btnAbrir.setIcon(SVGIcons.FolderIcon());
-        btnDeshacer.setIcon(SVGIcons.UndoIcon());
-        btnRehacer.setIcon(SVGIcons.RedoIcon());
-        btnCompilar.setIcon(SVGIcons.PlayIcon());
-        btnReRun.setIcon(SVGIcons.ArrowLeftIcon());
-        
+    public int getTabCount(){
+        // Conteo de las tab de tabbedCode -1
+        tabCount = tabbedCode.getTabCount()-1;
+        return tabCount;
+    }
+
+    public int getTabSelected(){
+        // Conteo de las tab de tabbedCode -1
+        tabSelected = tabbedCode.getSelectedIndex();
+        return tabSelected;
     }
     
-    public void changeIconColor(Color color){
-        SVGIcons.changeColor(color);
-        btnNuevo.repaint();
-        btnGuardar.repaint();
-        btnDeshacer.repaint();
-        btnRehacer.repaint();
-        btnCompilar.repaint();
+    public RSyntaxTextArea getCurrentCode(){
+        if(list_rsyntax==null || list_rsyntax.isEmpty())
+            return null;
+        currentCode = list_rsyntax.get(getTabSelected());
+        return currentCode;
     }
     
-    
-    private void inittabbedCode(){
-        /*
-            Metodo utilizado para inicializar inittabbedCode el tabbed pane principal,
+    /**
+     * Metodo utilizado para inicializar inittabbedCode el tabbed pane principal,
             -Genera el leadingComponent
             -Controla la creacion y eliminacion de pestañas
             -Muestra la pestaña de inicio
             -Maneja la asociacion de cada RSyntax
-        */
-        
+     */
+    private void inittabbedCode(){
         
         /*-------------------------------------------------------*/
         /*  Creacion del leadingComponent (boton + al inicio)   */
         
-        
-        // Crear boton "+" y boton "-" 
-        JButton addButton = new JButton("+");
-        JButton removeButton = new JButton("-");
-        
         // Agrega botones como componentes líderes y de seguimiento
-        tabbedCode.putClientProperty("JTabbedPane.leadingComponent", addButton);
-        //tabbedCode.putClientProperty("JTabbedPane.trailingComponent", removeButton);
-    
-        // Agrega ActionListener para los botones
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para añadir una nueva pestaña
-                addCodeTab("Nuevo*");
-                tabbedCode.setSelectedIndex(tabbedCode.getTabCount()-1);
-            }
-        });
-
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para eliminar la última pestaña
-                int lastIndex = tabbedCode.getTabCount() - 1;
-                if (lastIndex >= 0) {
-                    tabbedCode.removeTabAt(lastIndex);
-                }
-            }
-        });
+        
+//    
+//        // Agrega ActionListener para los botones
+//        addButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Lógica para añadir una nueva pestaña
+//                addCodeTab("Nuevo*");
+//                tabbedCode.setSelectedIndex(tabbedCode.getTabCount()-1);
+//            }
+//        });
+//
+//        removeButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Lógica para eliminar la última pestaña
+//                int lastIndex = tabbedCode.getTabCount() - 1;
+//                if (lastIndex >= 0) {
+//                    tabbedCode.removeTabAt(lastIndex);
+//                }
+//            }
+//        });
         
         /*-------------------------------------------------------*/
         /*  Boton de cierre de pestaña  */     
@@ -130,39 +118,7 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-    private void addCodeTab(String title) {
-        JPanel panel = new JPanel(new BorderLayout());
-        RSyntaxTextArea txt = new RSyntaxTextArea();
-        RTextScrollPane scrll = new RTextScrollPane(txt);
-        txt.setCodeFoldingEnabled(true);
-        txt.setWhitespaceVisible(true);
-        txt.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C);
-        txt.setBackground(UIManager.getColor("RoboKit.panel"));
-        
-        JFileChooser fileChooser = new JFileChooser();
-        int result = fileChooser.showOpenDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(selectedFile));
-                txt.read(br, null);
-                br.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
-        
-        
-        
-        
-        panel.add(scrll);
-        lista.add(txt);
-        tabbedCode.addTab(title, panel);
-        tabbedCode.setTabComponentAt(tabbedCode.indexOfComponent(panel), new ButtonTabComponent(tabbedCode));
-    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -173,6 +129,9 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlSearch = new javax.swing.JPanel();
+        txtSearch = new javax.swing.JTextField();
+        btnNuevaPestaña = new javax.swing.JButton();
         pnlToolMenu = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnNuevo = new javax.swing.JButton();
@@ -271,8 +230,14 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem21 = new javax.swing.JMenuItem();
+        jMenuItem22 = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem23 = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem25 = new javax.swing.JMenuItem();
+        jMenuItem24 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
@@ -281,6 +246,23 @@ public class Principal extends javax.swing.JFrame {
         jMenu7 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+
+        pnlSearch.setLayout(new java.awt.BorderLayout());
+
+        txtSearch.setPreferredSize(new java.awt.Dimension(200, 26));
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+        pnlSearch.add(txtSearch, java.awt.BorderLayout.LINE_END);
+
+        btnNuevaPestaña.setText("+");
+        btnNuevaPestaña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaPestañaActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -307,6 +289,11 @@ public class Principal extends javax.swing.JFrame {
         btnAbrir.setFocusable(false);
         btnAbrir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAbrir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnAbrir);
 
         pnlToolMenu.add(jToolBar1);
@@ -565,6 +552,11 @@ public class Principal extends javax.swing.JFrame {
         lblTitulo3.setText("Documentación");
 
         jLabel11.setText("Visitar el repositorio");
+        jLabel11.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jLabel11MousePressed(evt);
+            }
+        });
 
         jLabel12.setText("Wiki de robokit");
 
@@ -836,31 +828,49 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu1.setText("Archivo");
 
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem13.setText("Nuevo archivo");
         jMenu1.add(jMenuItem13);
 
+        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem16.setText("Nueva carpeta");
         jMenu1.add(jMenuItem16);
         jMenu1.add(jSeparator5);
 
+        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem14.setText("Abrir archivo");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem14);
 
+        jMenuItem15.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem15.setText("Abrir carpeta");
         jMenu1.add(jMenuItem15);
         jMenu1.add(jSeparator6);
 
+        jMenuItem18.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem18.setText("Guardar");
         jMenu1.add(jMenuItem18);
 
+        jMenuItem19.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem19.setText("Guardar como...");
         jMenu1.add(jMenuItem19);
 
+        jMenuItem20.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem20.setText("Guardar todo");
         jMenu1.add(jMenuItem20);
         jMenu1.add(jSeparator7);
 
+        jMenuItem17.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
         jMenuItem17.setText("Salir");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem17);
 
         jMenuBar1.add(jMenu1);
@@ -899,18 +909,44 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu6.setText("Vista");
 
-        jMenuItem1.setText("Fuente");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jMenu3.setText("Fuente");
+
+        jMenuItem21.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ADD, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem21.setText("Subir tamaño");
+        jMenuItem21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                jMenuItem21ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem1);
+        jMenu3.add(jMenuItem21);
 
-        jMenuItem2.setText("Tema");
-        jMenu6.add(jMenuItem2);
+        jMenuItem22.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SUBTRACT, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem22.setText("Bajar tamaño");
+        jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem22ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem22);
+        jMenu3.add(jSeparator8);
+
+        jMenuItem23.setText("Más");
+        jMenu3.add(jMenuItem23);
+
+        jMenu6.add(jMenu3);
+
+        jMenu4.setText("Tema");
+
+        jMenuItem25.setText("Claro");
+        jMenu4.add(jMenuItem25);
+
+        jMenuItem24.setText("Oscuro");
+        jMenu4.add(jMenuItem24);
+
+        jMenu6.add(jMenu4);
         jMenu6.add(jSeparator1);
 
+        jCheckBoxMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("Mostrar numero de linea");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -920,11 +956,13 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu6.add(jCheckBoxMenuItem1);
 
+        jCheckBoxMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jCheckBoxMenuItem2.setSelected(true);
         jCheckBoxMenuItem2.setText("Mostrar code folding");
         jMenu6.add(jCheckBoxMenuItem2);
         jMenu6.add(jSeparator2);
 
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem3.setText("Propiedades");
         jMenu6.add(jMenuItem3);
 
@@ -932,10 +970,22 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu7.setText("Ayuda");
 
+        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         jMenuItem4.setText("Acerca de");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu7.add(jMenuItem4);
 
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         jMenuItem5.setText("Documentación");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu7.add(jMenuItem5);
 
         jMenuBar1.add(jMenu7);
@@ -978,17 +1028,14 @@ public class Principal extends javax.swing.JFrame {
 
     private void tabChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabChanged
         txtOutput.setText("La tab seleccionada es: " + tabbedCode.getSelectedIndex());
+        activarBotones();
     }//GEN-LAST:event_tabChanged
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // Boton compilar
-        actualCode = lista.get(tabbedCode.getSelectedIndex()-1);
-        txtOutput.setText(actualCode.getText());
+        
+        txtOutput.setText(getCurrentCode().getText());
     }//GEN-LAST:event_btnCompilarActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
         // TODO add your handling code here:
@@ -997,6 +1044,53 @@ public class Principal extends javax.swing.JFrame {
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jLabel11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel11MousePressed
+        // Ir al repo del proyecto
+        abrirNavegador("https://github.com/dev-aj001/RoboKit_IDE");
+    }//GEN-LAST:event_jLabel11MousePressed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        //Abrir pagina del manual de usuario o ayuda
+        abrirNavegador("https://github.com/dev-aj001/RoboKit_IDE");
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // Abrir pagina de documentacion
+        abrirNavegador("https://github.com/dev-aj001/RoboKit_IDE");
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
+        // Subir 1 al tamaño de la fuente
+        System.out.println("se sube la fuente");
+    }//GEN-LAST:event_jMenuItem21ActionPerformed
+
+    private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
+        // Bajar 1 al tamaño de la fuente
+        System.out.println("se baja la fuente");
+    }//GEN-LAST:event_jMenuItem22ActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void btnNuevaPestañaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaPestañaActionPerformed
+        addCodeTab(false);
+    }//GEN-LAST:event_btnNuevaPestañaActionPerformed
+
+    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
+        // Abrir un archivo en una nueva pestaña
+        addCodeTab(true);
+    }//GEN-LAST:event_btnAbrirActionPerformed
+
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        JOptionPane.showConfirmDialog(null, "Seguro que deseas salir");
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        // Abrir un archivo en una nueva pestaña
+        addCodeTab(true);
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1024,6 +1118,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnCompilar;
     private javax.swing.JButton btnDeshacer;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnNuevaPestaña;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnPause;
     private javax.swing.JButton btnReRun;
@@ -1054,10 +1149,11 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
@@ -1068,8 +1164,12 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
+    private javax.swing.JMenuItem jMenuItem21;
+    private javax.swing.JMenuItem jMenuItem22;
+    private javax.swing.JMenuItem jMenuItem23;
+    private javax.swing.JMenuItem jMenuItem24;
+    private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -1104,6 +1204,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
@@ -1120,6 +1221,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JSplitPane mainSplit;
     private javax.swing.JPanel pnlLexico;
     private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel pnlSearch;
     private javax.swing.JPanel pnlSemantico;
     private javax.swing.JPanel pnlSintactico;
     private javax.swing.JPanel pnlToolMenu;
@@ -1128,13 +1230,189 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabbedCode;
     private javax.swing.JTabbedPane tabbedCompile;
     public static javax.swing.JTextArea txtOutput;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 
-    private void botonMas() {
+    /**
+    * Agrega una nueva pestaña al JTabbedPane (tabbedCode) que contiene un RSyntaxTextArea en un RTextScrollPane.
+    * La pestaña se titula "Nuevo*" inicialmente y se llena con el contenido de un archivo si se proporciona uno.
+    *
+    * @param choose true: muestra un FileChooser, false: agrega una pestaña Nuevo*
+    */
+    private void addCodeTab(boolean choose) {
+        // Título predeterminado para la pestaña
+        String title = "Nuevo*";
+
+        // Panel que contendrá el RSyntaxTextArea en un RTextScrollPane
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Creación de RSyntaxTextArea
+        RSyntaxTextArea txt = new RSyntaxTextArea();
+
+        // Creación de RTextScrollPane y configuración
+        RTextScrollPane scrll = new RTextScrollPane(txt);
+        txt.setCodeFoldingEnabled(true);
+        txt.setWhitespaceVisible(true);
+        txt.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+
+        // Configuración del fondo del RSyntaxTextArea (puedes ajustar el color según tus necesidades)
+        txt.setBackground(UIManager.getColor("RoboKit.panel"));
         
+        // Si se proporciona un archivo, intenta leer su contenido y establecerlo en el RSyntaxTextArea
+        if (choose){
+            File file = buscarArchivo();
+            if(file!=null){
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    title = file.getName();
+                    txt.read(br, null);
+                    br.close();
+                    // Agrega el RTextScrollPane al panel
+                    panel.add(scrll);
+
+                    // Agrega el RSyntaxTextArea a la lista de componentes
+                    list_rsyntax.add(txt);
+
+                    // Agrega la pestaña al JTabbedPane con el título proporcionado
+                    tabbedCode.addTab(title, panel);
+
+                    // Configura el componente de la pestaña (ButtonTabComponent) para la pestaña recién agregada
+                    tabbedCode.setTabComponentAt(tabbedCode.indexOfComponent(panel), new ButtonTabComponent(tabbedCode));
+
+                    // Selecciona la pestaña recién agregada
+                    tabbedCode.setSelectedIndex(getTabCount());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Al parecer ocurrio un error");
+                }
+            } else return; // no se selecciono ningun archivo
+        }
+        // Agrega el RTextScrollPane al panel
+        panel.add(scrll);
+
+        // Agrega el RSyntaxTextArea a la lista de componentes
+        list_rsyntax.add(txt);
+
+        // Agrega la pestaña al JTabbedPane con el título proporcionado
+        tabbedCode.addTab(title, panel);
+
+        // Configura el componente de la pestaña (ButtonTabComponent) para la pestaña recién agregada
+        tabbedCode.setTabComponentAt(tabbedCode.indexOfComponent(panel), new ButtonTabComponent(tabbedCode));
+
+        // Selecciona la pestaña recién agregada
+        tabbedCode.setSelectedIndex(getTabCount());
+    }
+    
+    
+    /**
+    * Abrir un url en el navegador.
+    *
+    * @param url Cadena con el url completo a abrir.
+    */
+    private static void abrirNavegador(String url) {
+        try {
+            // Obtener el escritorio del sistema
+            Desktop desktop = Desktop.getDesktop();
+
+            // Abrir la URL en el navegador predeterminado
+            desktop.browse(new URI(url));
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Al parecer ocurrio un error");
+        }
+    }
+    
+    /**
+     * 
+     * @return retorna un archivo File que fue seleccionado por el filechooser
+     */
+    private File buscarArchivo(){
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
+    }
+    
+    //Iconos
+    private void setIcons() {
+        btnNuevo.setIcon(SVGIcons.NoteAddIcon());
+        btnGuardar.setIcon(SVGIcons.SaveIcon());
+        btnAbrir.setIcon(SVGIcons.FolderIcon());
+        btnDeshacer.setIcon(SVGIcons.UndoIcon());
+        btnRehacer.setIcon(SVGIcons.RedoIcon());
+        btnCompilar.setIcon(SVGIcons.PlayIcon());
+        btnReRun.setIcon(SVGIcons.ArrowLeftIcon());
+    }
+    /**
+     * Este metodo aun no funciona correctamente
+     * @param color 
+     */
+    private void changeIconColor(Color color){
+        SVGIcons.changeColor(color);
+        btnNuevo.repaint();
+        btnGuardar.repaint();
+        btnDeshacer.repaint();
+        btnRehacer.repaint();
+        btnCompilar.repaint();
     }
     
     public void setTxtOutput(String t){
         txtOutput.setText(t);
     }
+
+    /**
+     * Este metodo es utilizado para todas las propiedades de los componentes 
+     *  
+     * 
+     */
+    private void clientProp() {
+        setupTabbedCode();
+        setupSearch();
+    }
+
+    private void setupTabbedCode() {
+        tabbedCode.putClientProperty("JTabbedPane.leadingComponent", btnNuevaPestaña);
+        tabbedCode.putClientProperty("JTabbedPane.trailingComponent", pnlSearch);
+    }
+    
+    private void setupSearch(){
+        txtSearch.putClientProperty("JTextField.placeholderText", "Buscar");
+        txtSearch.putClientProperty("JTextField.leadingIcon", SVGIcons.SearchIcon());
+        //txtSearch.putClientProperty("JTextField.showClearButton", true);
+        
+    }
+
+    private void activarBotones() {
+        String tabTtile = tabbedCode.getTitleAt(getTabSelected());
+        if(!tabTtile.endsWith(".rk")){
+            btnCompilar.setEnabled(false);
+            //btnDeshacer.setEnabled(false);
+            //btnRehacer.setEnabled(false);
+        }else{
+            btnCompilar.setEnabled(true);
+            //btnDeshacer.setEnabled(true);
+            //btnRehacer.setEnabled(true);
+        }
+        
+//        if(getCurrentCode()!= null){  /*Reparar el getCurrentCode*/
+//            if(getCurrentCode().canUndo()){
+//                btnDeshacer.setEnabled(true);
+//            }else {
+//                btnDeshacer.setEnabled(false);
+//            }
+//
+//            if(getCurrentCode().canRedo()){
+//                btnRehacer.setEnabled(true);
+//            }else {
+//                btnRehacer.setEnabled(false);
+//            }
+//        }
+    }
+
+    
+    
+    
 }
