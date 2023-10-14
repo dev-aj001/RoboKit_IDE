@@ -1,0 +1,85 @@
+package analizadores;
+
+import java_cup.runtime.*;
+import java.util.LinkedList;
+
+/* codigo del parser */
+parser code
+{:
+    public int resultado = 0;
+    public static LinkedList<TError> TablaES = new LinkedList<TError>();
+
+    // Metodo que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s){
+
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+
+        System.out.println("Error sintactico recuperado !!!!!!");
+        System.out.println("|lexema: " + lexema + "|fila: " + fila + "|columna: " + columna);
+
+        TError error = new TError(lexema, "error sintactico", "la sintaxis es incorrecta", fila, columna);
+        TablaES.add(error);
+    }
+
+    // Metodo que se llama en el momento que no es posible la recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+
+        System.out.println("Error sintactico recuperado !!!!!!");
+        System.out.println("|lexema: " + lexema + "|fila: " + fila + "|columna: " + columna);
+
+        TError error = new TError(lexema, "error sintactico", "la sintaxis es incorrecta", fila, columna);
+        TablaES.add(error);
+    }
+:}
+
+/* codigo para acciones gramaticales */
+action code
+{:
+:}
+
+/** Simbolos terminales **/
+terminal using, end;
+terminal if, else, repeat, while, do;
+terminal switch, case, break, motors, sensors;
+terminal begin, loop;
+terminal var, const;
+terminal int_type, real_type, boolean_type, string_type;
+terminal num_int, num_real, cadena;
+terminal true, false;
+terminal and, or, not;
+terminal mas, menos, div, mul;
+terminal mayor, menor, mayor_i, menor_i, igual;
+terminal paren_l, paren_r;
+terminal llave_l, llave_r;
+terminal corch_l, corch_r;
+terminal fin;
+
+/** Simbolos Non terminales **/
+
+non terminal INICIO;
+non terminal Integer EXP; 
+
+/* precedencias */
+precedence left mas, menos;
+precedence left mul, div;
+
+/** Gramaticas **/
+
+start with INICIO;
+
+// inicio de la sintaxis
+INICIO::=EXP:e                  {: resultado=e :};
+
+// expresion aritmetica
+EXP ::= EXP:e1 mas EXP:e2       {: resultado=e1+e2 :}
+    | EXP:e1 menos EXP:e2       {: resultado=e1-e2 :}
+    | EXP:e1 mul EXP:e2         {: resultado=e1*e2 :}
+    | EXP:e1 div EXP:e2         {: resultado=e1/e2 :}
+    | paren_l EXP:e paren_r     {: resultado=e :}
+    | num_int:n                 {: resultado=n :};

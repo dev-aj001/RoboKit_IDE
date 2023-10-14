@@ -4,6 +4,8 @@
  */
 package vista;
 
+import analizadores.Lexer;
+import analizadores.parser;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -20,9 +22,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -30,8 +35,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
@@ -41,17 +50,18 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 public class Principal extends javax.swing.JFrame {
 
     private RSyntaxTextArea currentCode;
-    private ArrayList<RSyntaxTextArea> list_rsyntax;
+    private ArrayList<TextEditorPane> list_textEditor;
     private int tabCount;
     private int tabSelected;
     
     public Principal() {
         initComponents();
-        this.list_rsyntax = new ArrayList<>();
+        this.list_textEditor = new ArrayList<>();
         inittabbedCode();
         clientProp();
         rightSplit.setDividerLocation(0.6);
         //changeIconColor(Color.yellow);
+        
         setIcons();        
         SVGIcons.NoteAddIcon().setColorFilter( new FlatSVGIcon.ColorFilter( color -> Color.RED ) );
     }
@@ -69,10 +79,14 @@ public class Principal extends javax.swing.JFrame {
     }
     
     public RSyntaxTextArea getCurrentCode(){
-        if(list_rsyntax==null || list_rsyntax.isEmpty())
-            return null;
-        currentCode = list_rsyntax.get(getTabSelected());
         return currentCode;
+    }
+    
+    private TextEditorPane getTextFromList(){
+        if("Welcome".equals(tabbedCode.getTitleAt(0))){
+            return list_textEditor.get(getTabSelected()-1);
+        }
+        return getTabCount()!=0?list_textEditor.get(getTabSelected()):null;
     }
     
     /**
@@ -83,23 +97,6 @@ public class Principal extends javax.swing.JFrame {
             -Maneja la asociacion de cada RSyntax
      */
     private void inittabbedCode(){
-        
-        /*-------------------------------------------------------*/
-        /*  Creacion del leadingComponent (boton + al inicio)   */
-        
-        // Agrega botones como componentes líderes y de seguimiento
-        
-//    
-//        // Agrega ActionListener para los botones
-//        addButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Lógica para añadir una nueva pestaña
-//                addCodeTab("Nuevo*");
-//                tabbedCode.setSelectedIndex(tabbedCode.getTabCount()-1);
-//            }
-//        });
-//
 //        removeButton.addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -132,6 +129,9 @@ public class Principal extends javax.swing.JFrame {
         pnlSearch = new javax.swing.JPanel();
         txtSearch = new javax.swing.JTextField();
         btnNuevaPestaña = new javax.swing.JButton();
+        pnlTab = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         pnlToolMenu = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnNuevo = new javax.swing.JButton();
@@ -264,6 +264,38 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        pnlTab.setOpaque(false);
+
+        jLabel1.setIcon(SVGIcons.PlayIcon());
+        jLabel1.setText("Prueba");
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        jButton1.setText("x");
+        jButton1.setBorder(null);
+
+        javax.swing.GroupLayout pnlTabLayout = new javax.swing.GroupLayout(pnlTab);
+        pnlTab.setLayout(pnlTabLayout);
+        pnlTabLayout.setHorizontalGroup(
+            pnlTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTabLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlTabLayout.setVerticalGroup(
+            pnlTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTabLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTabLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jButton1.setSize(11, 11);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -283,6 +315,11 @@ public class Principal extends javax.swing.JFrame {
         btnGuardar.setFocusable(false);
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnGuardar);
 
         btnAbrir.setText("Abrir");
@@ -1033,8 +1070,15 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
         // Boton compilar
+        String codigo = getTextFromList().getText();
+        Lexer lexer = new Lexer(new BufferedReader(new StringReader(codigo)));
+        parser sintax = new parser(lexer);
         
-        txtOutput.setText(getCurrentCode().getText());
+        try {
+            sintax.parse();
+            txtOutput.setText("El resultado es: " +sintax.resultado);
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_btnCompilarActionPerformed
 
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
@@ -1081,6 +1125,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
         // Abrir un archivo en una nueva pestaña
         addCodeTab(true);
+        
     }//GEN-LAST:event_btnAbrirActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
@@ -1091,6 +1136,10 @@ public class Principal extends javax.swing.JFrame {
         // Abrir un archivo en una nueva pestaña
         addCodeTab(true);
     }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        guardarArchivo();
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1124,6 +1173,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnReRun;
     private javax.swing.JButton btnRehacer;
     private javax.swing.JButton btnStop;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
@@ -1132,6 +1182,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1224,6 +1275,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSearch;
     private javax.swing.JPanel pnlSemantico;
     private javax.swing.JPanel pnlSintactico;
+    private javax.swing.JPanel pnlTab;
     private javax.swing.JPanel pnlToolMenu;
     private javax.swing.JSplitPane rightSplit;
     private javax.swing.JScrollPane scrLexico;
@@ -1246,8 +1298,8 @@ public class Principal extends javax.swing.JFrame {
         // Panel que contendrá el RSyntaxTextArea en un RTextScrollPane
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Creación de RSyntaxTextArea
-        RSyntaxTextArea txt = new RSyntaxTextArea();
+        // Creación de TextEditorPane
+        TextEditorPane txt = new TextEditorPane();
 
         // Creación de RTextScrollPane y configuración
         RTextScrollPane scrll = new RTextScrollPane(txt);
@@ -1265,22 +1317,9 @@ public class Principal extends javax.swing.JFrame {
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(file));
                     title = file.getName();
-                    txt.read(br, null);
+                    FileLocation f = FileLocation.create(file);
+                    txt.load(f);
                     br.close();
-                    // Agrega el RTextScrollPane al panel
-                    panel.add(scrll);
-
-                    // Agrega el RSyntaxTextArea a la lista de componentes
-                    list_rsyntax.add(txt);
-
-                    // Agrega la pestaña al JTabbedPane con el título proporcionado
-                    tabbedCode.addTab(title, panel);
-
-                    // Configura el componente de la pestaña (ButtonTabComponent) para la pestaña recién agregada
-                    tabbedCode.setTabComponentAt(tabbedCode.indexOfComponent(panel), new ButtonTabComponent(tabbedCode));
-
-                    // Selecciona la pestaña recién agregada
-                    tabbedCode.setSelectedIndex(getTabCount());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Al parecer ocurrio un error");
@@ -1291,7 +1330,7 @@ public class Principal extends javax.swing.JFrame {
         panel.add(scrll);
 
         // Agrega el RSyntaxTextArea a la lista de componentes
-        list_rsyntax.add(txt);
+        list_textEditor.add(txt);
 
         // Agrega la pestaña al JTabbedPane con el título proporcionado
         tabbedCode.addTab(title, panel);
@@ -1301,6 +1340,8 @@ public class Principal extends javax.swing.JFrame {
 
         // Selecciona la pestaña recién agregada
         tabbedCode.setSelectedIndex(getTabCount());
+        
+        manejoDeArchivo();
     }
     
     
@@ -1412,7 +1453,39 @@ public class Principal extends javax.swing.JFrame {
 //        }
     }
 
+    private void guardarArchivo(){
+        try {
+            getTextFromList().save();
+            System.out.println("Se guardo exitosamente");
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     
+    private void manejoDeArchivo(){
+        // Agrega un DocumentListener al Document del JTextArea
+        getTextFromList().getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                // Se llama cuando se inserta texto
+                System.out.println("Se ha insertado texto");
+                tabbedCode.setTitleAt(getTabSelected(), tabbedCode.getTitleAt(getTabSelected()) + "*"); 
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                // Se llama cuando se elimina texto
+                System.out.println("Se ha eliminado texto");
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                // Se llama cuando hay un cambio que no afecta el contenido del texto
+                System.out.println("Se ha producido un cambio");
+            }
+        });
     
+    }
     
 }
