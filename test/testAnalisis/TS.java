@@ -13,7 +13,7 @@ import java.util.Iterator;
  */
 public class TS {
 
-    HashMap t;
+    HashMap <String, Object> t = new HashMap <String, Object> ();
     
     public TS() {
     }
