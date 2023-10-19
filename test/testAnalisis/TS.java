@@ -25,7 +25,7 @@ public class TS {
     }
     
     public Simbolo buscar(String nombre){
-        return (Simbolo) t.get(nombre);
+        return (Simbolo) t.get(nombre); // null si no existe
     }
     
     public void imprimir(){

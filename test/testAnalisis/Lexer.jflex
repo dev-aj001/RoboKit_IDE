@@ -37,6 +37,7 @@ import java.io.*;
                                     return new Symbol(sym.ID, s);
                                 }
 
-[\\-]?[0-9]+  { return new Symbol(sym.NUMERO, new Integer(yytext())); }
+[0-9]+  { return new Symbol(sym.NUMERO, new Integer(yytext())); }
 [ \t\r\n]+  {;}
+
 .           {System.out.println("Error lexico "+yytext());}

@@ -1,0 +1,46 @@
+/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
+/**
+    Este codigo es un ejemplo de la pagina oficial de CUP para un analisis sintactico.
+    Solo hace operaciones con + - *
+**/
+
+//Siempre importar la libreria de cup
+import java_cup.runtime.*;
+
+// Codigo del parser (java)
+parser code {:
+    // Coneccion con el scanner (jflex)
+    scanner s;
+    Parser(scanner s){ this.s=s; }
+:}
+
+// Definicion de como conectar con el scaner
+init with {: s.init(); :};
+scan with {: return s.next_token(); :};
+
+// Simbolos terminales (retornados por el scanner)
+terminal            FIN, SUMA, RESTA, MUL, UMENOS, LPAREN, RPAREN;
+terminal Integer    NUM;
+
+// Simbolos no terminales
+non terminal            expr_list;
+non terminal Integer    expr;
+
+// Precedencia de operadores
+precedence left SUMA, RESTA;
+precedence left MUL;
+precedence left UMENOS;
+
+
+// Reglas gramaticales
+expr_list ::= expr_list expr:e FIN         {: System.out.println(e);:}
+            | expr:e FIN                   {: System.out.println(e);:}
+;
+expr      ::= expr:e1 SUMA  expr:e2       {: RESULT = e1+e2;       :}
+             | expr:e1 RESTA expr:e2      {: RESULT = e1-e2;       :}
+             | expr:e1 MUL expr:e2        {: RESULT = e1*e2;       :}
+             | MUL expr:e                 {: RESULT = -e;          :}
+  	         %prec UMENOS
+              | LPAREN expr:e RPAREN	     {: RESULT = e;           :}
+              | NUM:n	                     {: RESULT = n;           :}
+             ;

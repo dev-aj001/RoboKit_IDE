@@ -2,32 +2,26 @@ package testAnalisis;
 
 import java_cup.runtime.*;
 import java.io.*;
+
+
 parser code {:
-    static TS tabla = new TS();
     
-    public static void analizar(String input){
-        parser parserObj = new parser();
-        Yylex miAnalizadorLexico = new Yylex(new BufferedReader(new StringReader(input)), tabla);
-        parserObj.setScanner(miAnalizadorLexico);
-        try{
-            parserObj.parse();
-            tabla.imprimir();
-        }catch(Exception x){
-            x.printStackTrace();
-            System.out.println("Error fatal.\n");
-        }
-    }
+    
 :};
 
 
 terminal PUNTOYCOMA, MAS, MENOS, POR, ENTRE;
 terminal LPAREN, RPAREN, PRINT, ASIG; 
 terminal Simbolo ID; 
-terminal Integer NUMERO; 
+terminal Integer NUMERO;
+
 non terminal listaExpr; 
 non terminal Integer expr, asig;
+
 precedence left MAS, MENOS; 
 precedence left POR, ENTRE;
+
+start with listaExpr;
 
 listaExpr ::= listaExpr asig PUNTOYCOMA 
             {: System.out.println("Asignacion(es) efectuada(s)."); :}
@@ -36,6 +30,7 @@ listaExpr ::= listaExpr asig PUNTOYCOMA
             | listaExpr error PUNTOYCOMA 
             | /* Epsilon */ 
             ;
+           
 asig ::= ID:s ASIG expr:e {:
             RESULT = e;
             s.valor = e;
@@ -45,11 +40,12 @@ asig ::= ID:s ASIG expr:e {:
             s.valor = e;
         :}
         ;
-expr ::= expr:e1 MAS expr:e2  {: RESULT = new Integer(e1.intValue() + e2.intValue()); :}
+        
+expr ::= expr:e1 MAS expr:e2    {: RESULT = new Integer(e1.intValue() + e2.intValue()); :}
         | expr:e1 MENOS expr:e2 {: RESULT = new Integer(e1.intValue() - e2.intValue()); :} 
-        | expr:e1 POR expr:e2  {: RESULT = new Integer(e1.intValue() * e2.intValue()); :}
+        | expr:e1 POR expr:e2   {: RESULT = new Integer(e1.intValue() * e2.intValue()); :}
         | expr:e1 ENTRE expr:e2 {: RESULT = new Integer(e1.intValue() / e2.intValue()); :}
-        | ID:s {: RESULT = s.valor; :}
-        | NUMERO:n {: RESULT = n; :}
-        | LPAREN expr:e RPAREN {: RESULT = e; :} 
+        | ID:s                  {: RESULT = s.valor; :}
+        | NUMERO:n              {: RESULT = n; :}
+        | LPAREN expr:e RPAREN  {: RESULT = e; :} 
         ;

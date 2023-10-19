@@ -1,0 +1,15 @@
+incio   ::=  block_declaraciones block_begin block_loop ;
+
+block_declaraciones ::= block_declaraciones espec_declaraciones | vacio ;
+espec_declaraciones ::= port_declaracion | funcion | declaracion_var;
+
+port_declaracion ::= port_num TYPE_SENSOR ID FIN_LINEA;
+port_num ::= PORT;
+
+funcion ::= FUNCION TYPE_FUNCION ID_FUNCION LPARENT espec_parametros RPAREN L_LLAVE declaracion_sentencias R_LLAVE;
+
+declaracion_sentencias ::= declaracion_sentencias sentencias | vacio ; 
+sentencias ::= port_declaracion | declaracion_var  | estruc_control | estruc_repetir | inciar_port ;
+
+espec_parametros ::= declaracion_parametros | vacio ;
+parametros ::= declaracion_parametros TYPE_VAR ID COMA | TYPE_VAR ID;
